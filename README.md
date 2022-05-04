@@ -1,2 +1,2 @@
-# bits
-This is a bits encoding library. 
+# bit
+This is a bit encoding library.
