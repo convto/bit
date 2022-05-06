@@ -20,7 +20,7 @@ func EncodedLen(n int) int {return n*8}
 // Encode encodes src into EncodedLen(len(src))
 // bytes of dst. As a convenience, it returns the number
 // of bytes written to dst, but this value is always EncodedLen(len(src)).
-// Encode implements bits encoding.
+// Encode implements bit encoding.
 func Encode(dst, src []byte) int {
 	j := 0
 	for _, v := range src {
@@ -37,14 +37,14 @@ func Encode(dst, src []byte) int {
 	return len(src)*8
 }
 
-// EncodeToString returns the bits encoding of src.
+// EncodeToString returns the bit encoding of src.
 func EncodeToString(src []byte) string {
 	dst := make([]byte, EncodedLen(len(src)))
 	Encode(dst, src)
 	return string(dst)
 }
 
-// bufferSize is the number of bits characters to buffer in encoder.
+// bufferSize is the number of bit characters to buffer in encoder.
 const bufferSize = 1024
 
 type encoder struct {
@@ -53,7 +53,7 @@ type encoder struct {
 	out [bufferSize]byte // output buffer
 }
 
-// NewEncoder returns an io.Writer that writes bits characters to w.
+// NewEncoder returns an io.Writer that writes bit characters to w.
 func NewEncoder(w io.Writer) io.Writer {
 	return &encoder{w: w}
 }
