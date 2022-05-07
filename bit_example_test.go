@@ -3,6 +3,7 @@ package bit
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"log"
 	"os"
 )
@@ -69,9 +70,7 @@ func ExampleDecoder_Read() {
 	src := []byte("01001000011001010110110001101100011011110010000001000111011011110111000001101000011001010111001000100001")
 	buf := bytes.NewBuffer(src)
 	dec := NewDecoder(buf)
-	dst := make([]byte, DecodedLen(len(src)))
-	dec.Read(dst)
-	fmt.Printf("%s\n", dst)
+	io.Copy(os.Stdout, dec)
 
 	// Output:
 	// Hello Gopher!
