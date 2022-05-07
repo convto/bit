@@ -9,7 +9,7 @@ This package provides Encode/Decode functionality for byte sequences into bit st
 For example, a byte represented by the hexadecimal number `ff` would be encoded as `1111111111` .
 
 ## Why is this necessary?
-Go does not (as far as I can tell) have the ability to output raw byte sequences as bit strings.  
+Go does not (as far as I can tell) have the flexibility to output raw byte sequences as bit strings.  
 This can be a problem in log output when, for example, parsing a binary message fails.
 
 Bit output with padding like `fmt.Sprintf("%08b", buf)` is close,  
