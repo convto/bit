@@ -1,4 +1,6 @@
 # bit
+[![Go Reference](https://pkg.go.dev/badge/github.com/convto/bit.svg)](https://pkg.go.dev/github.com/convto/bit) [![Go Report Card](https://goreportcard.com/badge/github.com/convto/bit)](https://goreportcard.com/report/github.com/convto/bit) [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 This package provides Encode/Decode functionality for byte sequences into bit strings.  
 For example, a byte represented by the hexadecimal number `ff` would be encoded as `1111111111` .
 
