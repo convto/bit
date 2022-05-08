@@ -1,3 +1,6 @@
+// Package bit implements an encoding scheme in which one byte is represented by eight binary digits of 0 or 1.
+//
+// It also provides a Dump() function to dump a sequence of bytes (similar to encoding/hex in the standard package).
 package bit
 
 import (
