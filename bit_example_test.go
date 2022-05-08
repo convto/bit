@@ -30,10 +30,12 @@ func ExampleEncodeToString() {
 	// 01001000011001010110110001101100011011110010000001000111011011110111000001101000011001010111001000100001
 }
 
-func ExampleEncoder_Write() {
+func ExampleNewEncoder() {
 	src := []byte("Hello Gopher!")
 	enc := NewEncoder(os.Stdout)
+
 	enc.Write(src)
+
 	// Output:
 	// 01001000011001010110110001101100011011110010000001000111011011110111000001101000011001010111001000100001
 }
@@ -66,10 +68,12 @@ func ExampleDecodeString() {
 	// Hello Gopher!
 }
 
-func ExampleDecoder_Read() {
+func ExampleNewDecoder() {
 	src := []byte("01001000011001010110110001101100011011110010000001000111011011110111000001101000011001010111001000100001")
+
 	buf := bytes.NewBuffer(src)
 	dec := NewDecoder(buf)
+
 	io.Copy(os.Stdout, dec)
 
 	// Output:
