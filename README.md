@@ -7,11 +7,20 @@ For example, a byte represented by the hexadecimal number `ff` would be encoded 
 Inspired by the standard package encoding/hex. I also got some implementation hints from it.
 
 ## Why is this necessary?
-Go does not (as far as I can tell) have the flexibility to output raw byte sequences as bit strings.  
-This can be a problem in log output when, for example, parsing a binary message fails.
+Byte sequences can be output as bit strings using the standard package `fmt` as follows
 
-Bit output with padding like `fmt.Sprintf("%08b", buf)` is close,  
-but I created this package for more flexible handling (e.g. `io.Reader` and `io.Writer` support, Or `Dump()` output support like `xxd -b` ).
+```go
+for i := 0; i < len(src); i++ {
+    fmt.Printf("%08b", src[i])
+}
+```
+
+In some cases, this is sufficient. However, this does not implement `io.Reader` or `io.Writer` , so flexible handling such as stream support is not possible.  
+In addition, it is tedious to output in a human-readable format such as `xxd -b`.
+
+Therefore, outputting bit strings using the standard package `fmt` is inconvenient, for example, when debugging a program that evaluates binaries.
+
+I created this package for more flexible handling (e.g. `io.Reader` and `io.Writer` support, Or `Dump()` output support like `xxd -b` ).
 
 ## Usage
 
@@ -19,7 +28,7 @@ Here are the basics. If you want more details, please refer to example_test or t
 
 ### Encode
 
-Encode the given byte sequence.
+Encode the given byte sequences.
 
 ```go
 src := []byte("Hello Gopher!")
@@ -35,7 +44,7 @@ fmt.Printf("%s\n", dst)
 
 ### Decode
 
-The input to the decoding process is a bit-encoded byte sequence.  
+Decode takes as input a bit-encoded byte sequences.  
 Eight characters represent one byte, so the input must be a multiple of 8 bytes.
 
 ```go
@@ -55,7 +64,7 @@ fmt.Printf("%s\n", dst[:n])
 
 ### Dump
 
-Dump returns the same output as `xxd -b` .
+Dump returns output like `xxd -b` .
 
 ```go
 dump := Dump([]byte("dump test"))
