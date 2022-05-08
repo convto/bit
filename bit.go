@@ -1,9 +1,11 @@
 package bit
 
 import (
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"io"
+	"strings"
 )
 
 const (
@@ -97,7 +99,7 @@ func DecodedLen(x int) int { return x / 8 }
 // Decode decodes src into DecodedLen(len(src)) bytes,
 // returning the actual number of bytes written to dst.
 //
-// Decode expects that src contains only bit
+// Decode expects that src contains only '0' or '1'
 // characters and that src has multiple of 8 length.
 // If the input is malformed, Decode returns the number
 // of bytes decoded before the error.
@@ -222,4 +224,134 @@ func (d *decoder) Read(p []byte) (n int, err error) {
 		return numDec, d.err // Only expose errors when buffer fully consumed
 	}
 	return numDec, nil
+}
+
+// Dump returns a string that contains a bit dump of the given data. The format
+// of the bit dump matches the output of `xxd -b` on the command line.
+func Dump(data []byte) string {
+	if len(data) == 0 {
+		return ""
+	}
+
+	var buf strings.Builder
+	// Dumper will write 72 bytes per complete 6 byte chunk, and at least
+	// 67 bytes for whatever remains. Round the allocation up, since only a
+	// maximum of 5 bytes will be wasted.
+	buf.Grow((1 + ((len(data) - 1) / 6)) * 72)
+
+	dumper := Dumper(&buf)
+	dumper.Write(data)
+	dumper.Close()
+	return buf.String()
+}
+
+// Dumper returns a WriteCloser that writes a bit dump of all written data to
+// w. The format of the dump matches the output of `xxd -b` on the command
+// line.
+func Dumper(w io.Writer) io.WriteCloser {
+	return &dumper{w: w}
+}
+
+type dumper struct {
+	w          io.Writer
+	rightChars [7]byte
+	buf        [14]byte
+	used       int  // number of bytes in the current line
+	n          uint // number of bytes, total
+	closed     bool
+}
+
+func toChar(b byte) byte {
+	if b < 32 || b > 126 {
+		return '.'
+	}
+	return b
+}
+
+func (h *dumper) Write(data []byte) (n int, err error) {
+	if h.closed {
+		return 0, errors.New("bit: dumper closed")
+	}
+
+	// Output lines look like:
+	// 00000000: 00110000 00110001 00110010 00110011 00110100 00110101  012345
+	// ^ offset                                                         ^ ASCII of line.
+	for i := range data {
+		if h.used == 0 {
+			// At the beginning of a line we print the current
+			// offset in bit.
+			h.buf[0] = byte(h.n >> 24)
+			h.buf[1] = byte(h.n >> 16)
+			h.buf[2] = byte(h.n >> 8)
+			h.buf[3] = byte(h.n)
+			hex.Encode(h.buf[4:], h.buf[:4])
+			h.buf[12] = ':'
+			h.buf[13] = ' '
+			_, err = h.w.Write(h.buf[4:])
+			if err != nil {
+				return
+			}
+		}
+		Encode(h.buf[:], data[i:i+1])
+		h.buf[8] = ' '
+		l := 9
+		if h.used == 5 {
+			// There's an additional space after the 8th byte.
+			h.buf[9] = ' '
+			l = 10
+		}
+		_, err = h.w.Write(h.buf[:l])
+		if err != nil {
+			return
+		}
+		n++
+		h.rightChars[h.used] = toChar(data[i])
+		h.used++
+		h.n++
+		if h.used == 6 {
+			h.rightChars[6] = '\n'
+			_, err = h.w.Write(h.rightChars[:])
+			if err != nil {
+				return
+			}
+			h.used = 0
+		}
+	}
+	return
+}
+
+func (h *dumper) Close() (err error) {
+	// See the comments in Write() for the details of this format.
+	if h.closed {
+		return
+	}
+	h.closed = true
+	if h.used == 0 {
+		return
+	}
+	h.buf[0] = ' '
+	h.buf[1] = ' '
+	h.buf[2] = ' '
+	h.buf[3] = ' '
+	h.buf[4] = ' '
+	h.buf[5] = ' '
+	h.buf[6] = ' '
+	h.buf[7] = ' '
+	h.buf[8] = ' '
+	h.buf[9] = ' '
+	nBytes := h.used
+	for h.used < 6 {
+		l := 9
+		if h.used == 5 {
+			l = 10
+		}
+		_, err = h.w.Write(h.buf[:l])
+		if err != nil {
+			return
+		}
+		h.used++
+	}
+	h.rightChars[nBytes] = '\n'
+	_, err = h.w.Write(h.rightChars[:nBytes+1])
+	return
 }

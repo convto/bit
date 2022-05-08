@@ -75,3 +75,22 @@ func ExampleDecoder_Read() {
 	// Output:
 	// Hello Gopher!
 }
+
+func ExampleDump() {
+	dump := Dump([]byte("dump test"))
+	fmt.Printf("%s\n", dump)
+
+	// Output:
+	// 00000000: 01100100 01110101 01101101 01110000 00100000 01110100  dump t
+	// 00000006: 01100101 01110011 01110100                             est
+}
+
+func ExampleDumper() {
+	d := Dumper(os.Stdout)
+	d.Write([]byte("dump test"))
+	d.Close()
+
+	// Output:
+	// 00000000: 01100100 01110101 01101101 01110000 00100000 01110100  dump t
+	// 00000006: 01100101 01110011 01110100                             est
+}
