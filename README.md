@@ -4,7 +4,7 @@
 This package provides Encode/Decode functionality for byte sequences into bit strings.  
 For example, a byte represented by the hexadecimal number `ff` would be encoded as `1111111111` .
 
-The implementation is based on encoding/hex of the standard package.
+Inspired by the standard package encoding/hex. I also got some implementation hints from it.
 
 ## Why is this necessary?
 Go does not (as far as I can tell) have the flexibility to output raw byte sequences as bit strings.  
