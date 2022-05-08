@@ -1,19 +1,15 @@
 # bit
-This is a bit encoding library, supporting encoding and decoding.  
-It also provides io.Reader and io.Writer.  
-The implementation is based on encoding/hex of the standard package.
-
-## What is this?
-This package provides Encode/Decode functionality for byte sequences into bit strings.
-
+This package provides Encode/Decode functionality for byte sequences into bit strings.  
 For example, a byte represented by the hexadecimal number `ff` would be encoded as `1111111111` .
+
+The implementation is based on encoding/hex of the standard package.
 
 ## Why is this necessary?
 Go does not (as far as I can tell) have the flexibility to output raw byte sequences as bit strings.  
 This can be a problem in log output when, for example, parsing a binary message fails.
 
 Bit output with padding like `fmt.Sprintf("%08b", buf)` is close,  
-but I created this package for more flexible handling (e.g. io.Reader and io.Writer support, Or dump output support like `xxd -b` ).
+but I created this package for more flexible handling (e.g. `io.Reader` and `io.Writer` support, Or `Dump()` output support like `xxd -b` ).
 
 ## Usage
 
