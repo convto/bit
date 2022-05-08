@@ -15,7 +15,7 @@ but I created this package for more flexible handling (e.g. `io.Reader` and `io.
 
 ## Usage
 
-Only basic Encode/Decode is queried here. Please refer to the example for details.
+Here are the basics. If you want more details, please refer to example_test or the package documentation.
 
 ### Encode
 
