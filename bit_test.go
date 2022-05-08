@@ -113,7 +113,7 @@ func TestEncoderDecoder(t *testing.T) {
 			var buf bytes.Buffer
 			enc := NewEncoder(&buf)
 			r := struct{ io.Reader }{bytes.NewReader(input)} // io.Reader only; not io.WriterTo
-			if n, err := io.CopyBuffer(enc, r, make([]byte, 7)); n != int64(len(input)) || err != nil {
+			if n, err := io.CopyBuffer(enc, r, nil); n != int64(len(input)) || err != nil {
 				t.Errorf("encoder.Write(%q*%d) = (%d, %v), want (%d, nil)", test.dec, multiplier, n, err, len(input))
 				continue
 			}
@@ -126,7 +126,7 @@ func TestEncoderDecoder(t *testing.T) {
 			dec := NewDecoder(&buf)
 			var decBuf bytes.Buffer
 			w := struct{ io.Writer }{&decBuf} // io.Writer only; not io.ReaderFrom
-			if _, err := io.CopyBuffer(w, dec, make([]byte, 7)); err != nil || decBuf.Len() != len(input) {
+			if _, err := io.CopyBuffer(w, dec, nil); err != nil || decBuf.Len() != len(input) {
 				t.Errorf("decoder.Read(%q*%d) = (%d, %v), want (%d, nil)", test.enc, multiplier, decBuf.Len(), err, len(input))
 			}
 
