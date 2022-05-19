@@ -22,7 +22,7 @@ const (
 	b7       = 0b01000000
 )
 
-// ErrLength reports an attempt to decode an odd-length input
+// ErrLength reports an attempt to decode not a multiple of 8 length input
 // using Decode or DecodeString.
 // The stream-based Decoder returns io.ErrUnexpectedEOF instead of ErrLength.
 var ErrLength = errors.New("bit: bit string length not a multiple of 8")
