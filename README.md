@@ -1,8 +1,8 @@
 # bit
 [![Go Reference](https://pkg.go.dev/badge/github.com/convto/bit.svg)](https://pkg.go.dev/github.com/convto/bit) [![Go Report Card](https://goreportcard.com/badge/github.com/convto/bit)](https://goreportcard.com/report/github.com/convto/bit) [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-This package provides Encode/Decode functionality for byte sequences to bit strings.  
-For example, a byte represented by the hexadecimal number `ff` would be encoded as `1111111111` .
+This package provides encoding for converting byte sequences to bit strings.  
+For example, a byte represented by the hexadecimal number `ff` would be encoded as `11111111` .
 
 Inspired by the standard package encoding/hex. I also got some implementation hints from it.
 
@@ -16,7 +16,7 @@ for i := 0; i < len(src); i++ {
 ```
 
 In some cases, this is sufficient. However, this does not implement `io.Reader` or `io.Writer` , so flexible handling such as stream support is not possible.  
-In addition, it is tedious to output in a human-readable format such as `xxd -b`.
+In addition, it is tedious to output in a human-readable format like `xxd -b`.
 
 Therefore, outputting bit strings using the standard package `fmt` is inconvenient, for example, when debugging a program that evaluates binaries.
 
@@ -24,7 +24,7 @@ I created this package for more flexible handling (e.g. `io.Reader` and `io.Writ
 
 ## Usage
 
-Here are the basics. If you want more details, please refer to example_test or the package documentation.
+Here are the basics. If you want more details, please refer to [example_test](./bit_example_test.go) or [package documentation](https://pkg.go.dev/github.com/convto/bit).
 
 ### Encode
 
